@@ -1,6 +1,7 @@
 package com.example.weatherapp.di
 
 
+import com.example.weatherapp.data.remote.WeatherApiService
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -52,7 +53,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMovieApiService(retrofit: Retrofit): MovieApiService {
-        return retrofit.create(MovieApiService::class.java)
+    fun provideMovieApiService(retrofit: Retrofit): WeatherApiService {
+        return retrofit.create(WeatherApiService::class.java)
     }
 }

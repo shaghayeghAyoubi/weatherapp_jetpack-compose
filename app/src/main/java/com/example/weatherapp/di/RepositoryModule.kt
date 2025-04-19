@@ -1,59 +1,19 @@
 package com.example.weatherapp.di
 
-
-import com.example.weatherapp.data.remote.WeatherApiService
-import com.google.gson.Gson
+import com.example.weatherapp.data.repository.WeatherRepositoryImpl
+import com.example.weatherapp.domain.repository.WeatherRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import jakarta.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
-    private const val BASE_URL = "https://api.weatherapi.com/v1/"
-    private const val AUTH_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4OGU5ZDc1M2VhOTNkODMzZWIxZGRiY2MyZGVmMWZjMSIsIm5iZiI6MTYzNDk3MTkxNS42MTEsInN1YiI6IjYxNzNiMTBiZmQ3YWE0MDA0MzVjOTllYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jNYW4TIO2fjl_hfytjfuD3AVMyKrTmLCwCCeolJavEk"
-    private const val API_KEY = "fb5c4da780974f518fa103102251703"
-
-    @Provides
+abstract class RepositoryModule {
+    @Binds
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val originRequest = chain.request()
-                val originUrl = originRequest.url
-
-                val newUrl = originUrl.newBuilder()
-                    .addQueryParameter("api_key", API_KEY)
-                    .build()
-
-                val newRequest = originRequest.newBuilder()
-                    .url(newUrl)
-                    .build()
-
-                chain.proceed(newRequest)
-
-            }
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideMovieApiService(retrofit: Retrofit): WeatherApiService {
-        return retrofit.create(WeatherApiService::class.java)
-    }
+    abstract fun bindWeatherRepository(
+        weatherRepositoryImpl: WeatherRepositoryImpl
+    ) : WeatherRepository
 }

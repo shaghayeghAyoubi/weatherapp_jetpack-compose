@@ -15,5 +15,5 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindWeatherRepository(
         weatherRepositoryImpl: WeatherRepositoryImpl
-    ) : WeatherRepository
+    ): WeatherRepository
 }

@@ -2,9 +2,9 @@ package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class WeatherResponse(
+data class WeatherResponseDto(
     @SerializedName("location") val location: LocationDto,
-    @SerializedName("current") val current: CurrentWeatherDto
+    @SerializedName("current") val current: CurrentWeatherDto,
 )
 
 data class LocationDto(

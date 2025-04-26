@@ -11,6 +11,7 @@ import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -56,4 +57,8 @@ object NetworkModule {
     fun provideWeatherApiService(retrofit: Retrofit): WeatherApiService {
         return retrofit.create(WeatherApiService::class.java)
     }
+
+    @Provides
+    @Named("apiKey")
+    fun provideApiKey(): String =API_KEY
 }

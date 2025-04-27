@@ -21,48 +21,61 @@ fun WeatherScreen(
 
     var cityName by remember { mutableStateOf(TextFieldValue("")) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        BasicTextField(
-            value = cityName,
-            onValueChange = { cityName = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
+    val snackbarHostState = remember { SnackbarHostState() } // 👈 create SnackbarHostState
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(onClick = {
-            if (cityName.text.isNotEmpty()) {
-                viewModel.fetchWeather(cityName.text)
-            }
-        }) {
-            Text(text = "Get Weather")
+    // 👇 Show Snackbar when errorMessage changes
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            BasicTextField(
+                value = cityName,
+                onValueChange = { cityName = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
 
-        when {
-            isLoading -> {
-                CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                if (cityName.text.isNotEmpty()) {
+                    viewModel.fetchWeather(cityName.text)
+                }
+            }) {
+                Text(text = "Get Weather")
             }
-            errorMessage != null -> {
-                Text(text = errorMessage ?: "Error", color = MaterialTheme.colorScheme.error)
-            }
-            weatherState != null -> {
-                val weather = weatherState!!
-                Text(text = "City: ${weather.location.name}")
-                Text(text = "Country: ${weather.location.country}")
-                Text(text = "Temperature: ${weather.current.tempC} °C")
-                Text(text = "Condition: ${weather.current.condition.text}")
-                Text(text = "Humidity: ${weather.current.humidity} %")
-                Text(text = "Wind: ${weather.current.windKph} km/h")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when {
+                isLoading -> {
+                    CircularProgressIndicator()
+                }
+                weatherState != null -> {
+                    val weather = weatherState!!
+                    Text(text = "City: ${weather.location.name}")
+                    Text(text = "Country: ${weather.location.country}")
+                    Text(text = "Temperature: ${weather.current.tempC} °C")
+                    Text(text = "Condition: ${weather.current.condition.text}")
+                    Text(text = "Humidity: ${weather.current.humidity} %")
+                    Text(text = "Wind: ${weather.current.windKph} km/h")
+                }
             }
         }
     }
 }
+

@@ -8,6 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okio.IOException
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,14 +28,22 @@ class WeatherViewModel @Inject constructor(
 
     fun fetchWeather(city: String) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
             try {
-                _isLoading.value = true
-                _errorMessage.value = null
                 val weather = getWeatherUseCase(city)
                 _weatherState.value = weather
+            }catch (e: IOException) {
+                _errorMessage.value = "Check your internet connection." // 👈 no network
+                _weatherState.value = null
+            } catch (e: HttpException) {
+                _errorMessage.value = "Server error: ${e.message()}" // 👈 bad response
+                _weatherState.value = null
             } catch (e: Exception) {
-                _errorMessage.value = e.localizedMessage ?: "Unknown Error"
-            } finally {
+                _errorMessage.value = "Unexpected error: ${e.localizedMessage}"
+                _weatherState.value = null
+            }
+            finally {
                 _isLoading.value = false
             }
         }

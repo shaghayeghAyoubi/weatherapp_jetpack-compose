@@ -2,80 +2,131 @@ package com.example.weatherapp.presentation
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.weatherapp.domain.model.WeatherResponse
 
 @Composable
 fun WeatherScreen(
     viewModel: WeatherViewModel = hiltViewModel()
 ) {
-    val weatherState by viewModel.weatherState.collectAsState()
+    val weatherSate by viewModel.weatherState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var cityName by remember { mutableStateOf(TextFieldValue("")) }
+    var snackbarHostState  = remember { SnackbarHostState() }
 
-    val snackbarHostState = remember { SnackbarHostState() } // 👈 create SnackbarHostState
-
-    // 👇 Show Snackbar when errorMessage changes
     LaunchedEffect(errorMessage) {
-        errorMessage?.let { message ->
-            snackbarHostState.showSnackbar(message)
+        errorMessage?.let {
+            message -> snackbarHostState.showSnackbar(message)
         }
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { padding ->
-        Column(
+        snackbarHost = {SnackbarHost(hostState = snackbarHostState)}
+    ) {  padding ->
+        Column (
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(padding),
+                .fillMaxWidth()
+                .padding(padding)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            BasicTextField(
+            verticalArrangement = Arrangement.Top
+        ){
+
+            OutlinedTextField(
                 value = cityName,
-                onValueChange = { cityName = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                onValueChange = { cityName = it},
+                label = { Text("Enter City Name")},
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
-                if (cityName.text.isNotEmpty()) {
-                    viewModel.fetchWeather(cityName.text)
-                }
-            }) {
+                    if(cityName.text.isNotEmpty()) {
+                        viewModel.fetchWeather(cityName.text)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(text = "Get Weather")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             when {
                 isLoading -> {
                     CircularProgressIndicator()
                 }
-                weatherState != null -> {
-                    val weather = weatherState!!
-                    Text(text = "City: ${weather.location.name}")
-                    Text(text = "Country: ${weather.location.country}")
-                    Text(text = "Temperature: ${weather.current.tempC} °C")
-                    Text(text = "Condition: ${weather.current.condition.text}")
-                    Text(text = "Humidity: ${weather.current.humidity} %")
-                    Text(text = "Wind: ${weather.current.windKph} km/h")
+
+                weatherSate != null -> {
+                    WeatherInfo(weather = weatherSate!!)
                 }
             }
+
         }
     }
 }
 
+@Composable
+fun WeatherInfo(weather: WeatherResponse) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Text(
+                text = weather.location.name,
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = weather.location.country,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "${weather.current.tempC}°C",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = weather.current.condition.text,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Humidity: ${weather.current.humidity}%",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Text(
+                text = "Wind: ${weather.current.windKph} km/h",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}

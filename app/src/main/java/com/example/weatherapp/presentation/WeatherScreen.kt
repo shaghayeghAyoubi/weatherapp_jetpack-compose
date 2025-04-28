@@ -1,6 +1,7 @@
 package com.example.weatherapp.presentation
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -14,7 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.domain.model.WeatherResponse
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun WeatherScreen(
@@ -70,7 +75,7 @@ fun WeatherScreen(
 
             when {
                 isLoading -> {
-                    CircularProgressIndicator()
+                    ShimmerWeatherCard()
                 }
 
                 weatherSate != null -> {
@@ -94,6 +99,13 @@ fun WeatherInfo(weather: WeatherResponse) {
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
+            Image(
+                painter = rememberAsyncImagePainter("https:${weather.current.condition.icon}"),
+                contentDescription = "Weather Icon",
+                modifier = Modifier.size(80.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = weather.location.name,
                 style = MaterialTheme.typography.titleLarge
@@ -129,4 +141,17 @@ fun WeatherInfo(weather: WeatherResponse) {
             )
         }
     }
+}
+@Composable
+fun ShimmerWeatherCard() {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.View)
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .shimmer(shimmerInstance),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {}
 }

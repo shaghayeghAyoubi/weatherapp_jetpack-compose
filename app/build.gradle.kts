@@ -67,5 +67,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
+    implementation(libs.compose.shimmer)
     kapt(libs.dagger.hilt.compiler)
 }

@@ -68,5 +68,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     implementation(libs.compose.shimmer)
+    implementation(libs.accompanist.navigation.animation)
+
     kapt(libs.dagger.hilt.compiler)
 }

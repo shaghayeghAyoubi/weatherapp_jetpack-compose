@@ -2,6 +2,7 @@ package com.example.weatherapp.presentation
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -15,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.domain.model.WeatherResponse
 import com.valentinilk.shimmer.ShimmerBounds
@@ -23,7 +26,9 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun WeatherScreen(
+    navController: NavController,
     viewModel: WeatherViewModel = hiltViewModel()
+
 ) {
     val weatherSate by viewModel.weatherState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -79,7 +84,7 @@ fun WeatherScreen(
                 }
 
                 weatherSate != null -> {
-                    WeatherInfo(weather = weatherSate!!)
+                    WeatherInfo(weather = weatherSate!!, navController = navController)
                 }
             }
 
@@ -88,11 +93,19 @@ fun WeatherScreen(
 }
 
 @Composable
-fun WeatherInfo(weather: WeatherResponse) {
+fun WeatherInfo(weather: WeatherResponse, navController: NavController) {
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate("details_screen")
+
+            }
+
+
+
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -151,7 +164,8 @@ fun ShimmerWeatherCard() {
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .shimmer(shimmerInstance),
+            .shimmer(shimmerInstance)
+          ,
         elevation = CardDefaults.cardElevation(8.dp)
     ) {}
 }

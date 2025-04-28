@@ -16,6 +16,7 @@ coil = "2.5.0"
 compose-shimmer = "1.0.5"
 hilt-nav = "1.2.0"
 lifecycle-viewmodel = "2.8.7"
+accompanist = "0.32.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ navigation-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", v
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "compose-shimmer" }
+accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

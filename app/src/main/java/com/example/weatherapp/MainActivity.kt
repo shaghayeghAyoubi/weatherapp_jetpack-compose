@@ -1,10 +1,11 @@
 package com.example.weatherapp
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.weatherapp.presentation.WeatherScreen
+
+import androidx.navigation.compose.rememberNavController
+import com.example.weatherapp.presentation.navigation.WeatherNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -13,9 +14,15 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             setContent {
                // If you have a theme
-                WeatherScreen()
+//                WeatherScreen()
+                val navController = rememberNavController()
+
+                WeatherNavGraph(navController = navController)
 
             }
 
     }
+
+
+
 }

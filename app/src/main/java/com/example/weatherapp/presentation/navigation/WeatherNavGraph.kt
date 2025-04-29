@@ -6,9 +6,11 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.weatherapp.presentation.DetailsScreen
+import androidx.navigation.navArgument
+import com.example.weatherapp.presentation.DetailScreen
 import com.example.weatherapp.presentation.WeatherScreen
 import com.example.weatherapp.presentation.utils.slideInFromLeft
 import com.example.weatherapp.presentation.utils.slideInFromRight
@@ -21,16 +23,20 @@ fun WeatherNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = "weather_screen",
-        enterTransition = { slideInFromRight() }, // Using the slideInFromRight transition
-        exitTransition = { slideOutToLeft() }, // Using the slideOutToLeft transition
-        popEnterTransition = { slideInFromLeft() }, // Using the slideInFromLeft transition for back navigation
-        popExitTransition = { slideOutToRight() }  // Using the slideOutToRight transition for back navigation
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         composable("weather_screen") {
             WeatherScreen(navController)
         }
-        composable("details_screen") {
-            DetailsScreen()
+        composable(
+            "details_screen/{cityName}",
+            arguments = listOf(navArgument("cityName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val cityName = backStackEntry.arguments?.getString("cityName") ?: ""
+            DetailScreen(cityName) // 👈 Pass it to your screen
         }
     }
 }

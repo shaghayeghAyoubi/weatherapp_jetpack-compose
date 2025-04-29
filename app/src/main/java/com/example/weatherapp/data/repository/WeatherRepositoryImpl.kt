@@ -15,13 +15,12 @@ import javax.inject.Singleton
 @Singleton  // This should be here to match the scope
 class WeatherRepositoryImpl @Inject constructor(
     private val apiService: WeatherApiService,
-    private val apiKey: String
 ) : WeatherRepository {
 
-    override suspend fun getWeather(apiKey: String,city: String): WeatherResponse {
+    override suspend fun getWeather(city: String): WeatherResponse {
         return apiService.getWeather( city).toDomain()
     }
-    override suspend fun getForecast(apiKey: String, city: String, days: Int): ForecastResponse {
+    override suspend fun getForecast(city: String, days: Int): ForecastResponse {
         return apiService.getForecast( city, days).toDomain()
     }
 }

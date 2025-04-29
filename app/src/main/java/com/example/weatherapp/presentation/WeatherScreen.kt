@@ -100,7 +100,7 @@ fun WeatherInfo(weather: WeatherResponse, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("details_screen")
+                navController.navigate("details_screen/${weather.location.name}")
 
             }
 

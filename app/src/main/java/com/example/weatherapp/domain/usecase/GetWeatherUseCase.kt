@@ -9,7 +9,7 @@ class GetWeatherUseCase @Inject constructor(private val repository: WeatherRepos
     suspend operator fun invoke (city : String): WeatherResponse {
         return repository.getWeather(city)
     }
-    suspend operator fun invoke (apiKey : String,city : String,days: Int): ForecastResponse {
+    suspend operator fun invoke (city : String,days: Int): ForecastResponse {
         return repository.getForecast(city, days)
     }
 }

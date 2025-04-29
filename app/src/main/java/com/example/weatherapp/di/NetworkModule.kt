@@ -26,9 +26,14 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
+                val originalUrl = originalRequest.url
+
+                val newUrl = originalUrl.newBuilder()
+                    .addQueryParameter("key", API_KEY)
+                    .build()
 
                 val newRequest = originalRequest.newBuilder()
-                    .addHeader("Authorization", "Bearer $AUTH_TOKEN") // ✅ Corrected
+                    .url(newUrl)
                     .build()
 
                 chain.proceed(newRequest)

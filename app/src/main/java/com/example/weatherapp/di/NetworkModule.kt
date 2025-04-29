@@ -18,6 +18,7 @@ import javax.inject.Named
 object NetworkModule {
     private const val BASE_URL = "https://api.weatherapi.com/v1/"
     private const val AUTH_TOKEN = "your-auth-token-here"
+    private const val API_KEY = "fb5c4da780974f518fa103102251703"
 
     @Provides
     @Singleton

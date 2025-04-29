@@ -6,7 +6,11 @@ data class ForecastResponse(
 
 data class ForecastDay(
     val date: String,
-    val avgTemp: Double,
-    val conditionText: String,
-    val conditionIconUrl: String
+    val avgTempCelsius: Double,
+    val condition: Condition
+)
+
+data class Condition(
+    val text: String,
+    val iconUrl: String
 )

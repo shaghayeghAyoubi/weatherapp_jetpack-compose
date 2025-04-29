@@ -31,7 +31,7 @@ class WeatherViewModel @Inject constructor(
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val weather = getWeatherUseCase(city)
+                val weather = getWeatherUseCase(  city)
                 _weatherState.value = weather
             }catch (e: IOException) {
                 _errorMessage.value = "Check your internet connection." // 👈 no network

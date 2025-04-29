@@ -5,6 +5,7 @@ import com.example.weatherapp.data.mapper.toDomain
 import com.example.weatherapp.data.model.ForecastDto
 import com.example.weatherapp.data.model.WeatherResponseDto
 import com.example.weatherapp.data.remote.WeatherApiService
+import com.example.weatherapp.domain.model.ForecastResponse
 import com.example.weatherapp.domain.model.WeatherResponse
 import com.example.weatherapp.domain.repository.WeatherRepository
 import javax.inject.Inject
@@ -18,10 +19,10 @@ class WeatherRepositoryImpl @Inject constructor(
 ) : WeatherRepository {
 
     override suspend fun getWeather(apiKey: String,city: String): WeatherResponse {
-        return apiService.getWeather("fb5c4da780974f518fa103102251703", city).toDomain()
+        return apiService.getWeather( city).toDomain()
     }
-    override suspend fun getForecast(apiKey: String, city: String, days: Int): ForecastDto {
-        return apiService.getForecast(apiKey, city, days)
+    override suspend fun getForecast(apiKey: String, city: String, days: Int): ForecastResponse {
+        return apiService.getForecast( city, days).toDomain()
     }
 }
 

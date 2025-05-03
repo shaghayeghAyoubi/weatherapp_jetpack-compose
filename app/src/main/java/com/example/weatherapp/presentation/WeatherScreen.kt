@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.weatherapp.domain.model.WeatherResponse
+import com.example.weatherapp.presentation.utils.UiState
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -30,16 +31,23 @@ fun WeatherScreen(
     viewModel: WeatherViewModel = hiltViewModel()
 
 ) {
-    val weatherSate by viewModel.weatherState.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
+//    val weatherSate by viewModel.weatherState.collectAsState()
+//    val isLoading by viewModel.isLoading.collectAsState()
+//    val errorMessage by viewModel.errorMessage.collectAsState()
 
+    val uiState by viewModel.uiState.collectAsState()
     var cityName by remember { mutableStateOf(TextFieldValue("")) }
     var snackbarHostState  = remember { SnackbarHostState() }
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let {
-            message -> snackbarHostState.showSnackbar(message)
+//    LaunchedEffect(errorMessage) {
+//        errorMessage?.let {
+//            message -> snackbarHostState.showSnackbar(message)
+//        }
+//    }
+
+    LaunchedEffect(uiState) {
+        if(uiState is UiState.Error) {
+            snackbarHostState.showSnackbar((uiState as UiState.Error).message)
         }
     }
 
@@ -78,13 +86,18 @@ fun WeatherScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            when {
-                isLoading -> {
-                    ShimmerWeatherCard()
+            when(uiState) {
+               is UiState.Loading -> {
+                   ShimmerWeatherCard()
+               }
+
+                is UiState.Success -> {
+                    val weather = (uiState as UiState.Success).data
+                    WeatherInfo(weather = weather, navController =  navController)
                 }
 
-                weatherSate != null -> {
-                    WeatherInfo(weather = weatherSate!!, navController = navController)
+                is UiState.Error -> {
+                    // Error already handled by snackbar
                 }
             }
 

@@ -36,7 +36,7 @@ fun WeatherNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("cityName") { type = NavType.StringType })
         ) { backStackEntry ->
             val cityName = backStackEntry.arguments?.getString("cityName") ?: ""
-            DetailScreen(cityName) // 👈 Pass it to your screen
+            DetailScreen(cityName, navController) // 👈 Pass it to your screen
         }
     }
 }
